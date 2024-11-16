@@ -7,7 +7,9 @@ import time
 import matplotlib.pyplot as plt
 
 
-# This function cleans up the text a bit
+# This function cleans up the text a bit 
+# removes punctuation and converts the text to lowercase
+# replaces newlines with spaces and splits the text into a list of words
 def preprocess_text(text, remove_punctuation=True, convert_lowercase=True):
     if remove_punctuation:
         text = text.translate(str.maketrans('', '', string.punctuation))
@@ -35,10 +37,17 @@ def build_markov_chain(words, k):
     return chain
 
 # Now we generate some text using our Markov Chain
+# we start with a given context and then we keep picking a random successor
+# until we have generated the desired length of text
+# we keep updating the context to the last k words of the sentence as we generate new words
+# this way we can keep track of what we've said before and use that to generate the next word
 def generate_text(chain, start_context, length):
+    # we start with the first k words of the sentence
     sentence = list(start_context)
+    # we also keep track of the current context, which is the last k words of the sentence
     current_context = start_context
     
+    # we keep generating words until we have the desired length
     for _ in range(length - len(start_context)):
         successors = chain.get(current_context, [])
         if not successors:
@@ -46,7 +55,7 @@ def generate_text(chain, start_context, length):
             current_context = random.choice(list(chain.keys()))
             continue
         next_word = random.choice(successors)  # Pick a successor, you know, randomly
-        sentence.append(next_word)
+        sentence.append(next_word) # add the next word to the sentence
         current_context = tuple(sentence[-len(current_context):])  # Update the context
     
     return " ".join(sentence)
