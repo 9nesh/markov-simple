@@ -16,8 +16,18 @@ def preprocess_text(text, remove_punctuation=True, convert_lowercase=True):
     return text.replace('\n', ' ').split()
 
 # Here we build our Markov Chain, pretty cool stuff
+# how this works is we take a list of words and a context size k
+# and we create a dictionary where each key is a k-word context
+# and the value is a list of the next words that follow that context
+# so if we have the context "hello world" and the next word is "foo"
+# then we would add "foo" to the list of successors for the key "hello world"
+# and we do this for every k-word context in the text
+
 def build_markov_chain(words, k):
     chain = defaultdict(list)
+    # defaultdict is a dictionary that automatically initializes the value for a key that doesn't exist 
+    # as a list, so we don't have to do that manually. this is important because some contexts will not have any successors
+    # we iterate over the words and for each k-word context, we add the next word to the list of successors
     for i in range(len(words) - k):
         context = tuple(words[i:i+k])  # This is our k-word context
         successor = words[i+k]        # And this is the next word
