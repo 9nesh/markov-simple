@@ -2,6 +2,8 @@
 
 This project implements a Markov Chain text generator using Python. It allows users to upload a text file, specify parameters for text generation, and visualize word frequencies. The application is built using Streamlit, making it easy to use and interactive.
 
+This project is live at https://markov-cs340.streamlit.app/
+
 ## Features
 
 - Upload a text file to generate new text based on its content.
