@@ -15,26 +15,46 @@ def load_text(file_path):
         print(f"Error: {e}")
         return ""
 
-# Now, we need to build a Markov Chain based on k-word contexts
+# Here we build our Markov Chain, pretty cool stuff
+# how this works is we take a list of words and a context size k
+# and we create a dictionary where each key is a k-word context
+# and the value is a list of the next words that follow that context
+# so if we have the context "hello world" and the next word is "foo"
+# then we would add "foo" to the list of successors for the key "hello world"
+# and we do this for every k-word context in the text
+
 def build_markov_chain(words, k):
     chain = defaultdict(list)
+    # defaultdict is a dictionary that automatically initializes the value for a key that doesn't exist 
+    # as a list, so we don't have to do that manually. this is important because some contexts will not have any successors
+    # we iterate over the words and for each k-word context, we add the next word to the list of successors
     for i in range(len(words) - k):
         context = tuple(words[i:i+k])  # This is our k-word context
-        successor = words[i+k]        # This is the next word that follows
+        successor = words[i+k]        # And this is the next word
         chain[context].append(successor)
     return chain
 
-# Next, we generate text using the Markov Chain we've built
+
+# Now we generate some text using our Markov Chain
+# we start with a given context and then we keep picking a random successor
+# until we have generated the desired length of text
+# we keep updating the context to the last k words of the sentence as we generate new words
+# this way we can keep track of what we've said before and use that to generate the next word
 def generate_text(chain, start_context, length):
+    # we start with the first k words of the sentence
     sentence = list(start_context)
+    # we also keep track of the current context, which is the last k words of the sentence
     current_context = start_context
     
+    # we keep generating words until we have the desired length
     for _ in range(length - len(start_context)):
         successors = chain.get(current_context, [])
         if not successors:
-            break  # Stop if there are no successors
-        next_word = random.choice(successors)  # Randomly pick a successor
-        sentence.append(next_word)
+            # If we hit a dead end, let's just pick a random context to keep going
+            current_context = random.choice(list(chain.keys()))
+            continue
+        next_word = random.choice(successors)  # Pick a successor, you know, randomly
+        sentence.append(next_word) # add the next word to the sentence
         current_context = tuple(sentence[-len(current_context):])  # Update the context
     
     return " ".join(sentence)
