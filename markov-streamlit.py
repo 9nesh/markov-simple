@@ -43,7 +43,7 @@ def generate_text(chain, start_context, length):
 
 # Here comes the main part of our Streamlit app
 def main():
-    st.title("Enhanced Markov Chain Text Generator")
+    st.title("Markov Chain Text Generator for CS340")
     
     # A little help section on the sidebar
     st.sidebar.title("Help")
